@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<strings>
+
+    <!--
+
+        By now, super constructor cannot be translated, ill try to find some way to do that
+        %<number> = will be replaced with something on class
+        eg: <example>I'm the %1 on queue</example>
+        <example>.replace("%1", queue.getList(me));
+
+        also: &#xA; = newline (aka \n)
+
+    -->
+
+    <!-- Generic Strings -->
+
+    <something_went_wrong>Something went wrong, try to do the process again</something_went_wrong>
+    <only_master_can_run>Only Bot Master can use this command</only_master_can_run>
+    <only_admin_can_run>Only Administrators can use this command</only_admin_can_run>
+
+    <!-- Hello Command -->
+
+    <hello>Hello!&#xA;Your message was: %1</hello>
+
+    <!-- ChangeLang Command -->
+
+    <available_lang>Available Languages:</available_lang>
+    <lang_updated>Language Updated!</lang_updated>
+
+    <!-- SetupGDrive Command -->
+
+    <gdrive_credentials_file>credentials/credentials.json</gdrive_credentials_file>
+    <gdrive_credentials_created>*Credentials created with success!*&#xA;Now, run *%1setupgdrive ok*</gdrive_credentials_created>
+    <gdrive_recv_ver_code>_Received verification code!_</gdrive_recv_ver_code>
+    <gdrive_credentails_folder_created>Credentials folder created!</gdrive_credentails_folder_created>
+    <gdrive_credentails_folder_error>Error on create credentials folder! (maybe this folder already exists?)</gdrive_credentails_folder_error>
+    <gdrive_setup_complete>*Setup Complete!*</gdrive_setup_complete>
+    <gdrive_need2allow>Now, we need to get your Google Drive permissions, so, enter [here](%1)</gdrive_need2allow>
+    <gdrive_localcurl>If you get a error when try to access localhost, type: *%1setupgdrive curltoken*</gdrive_localcurl>
+    <gdrive_setup_info>Setup Bo³+t for Google Drive</gdrive_setup_info>
+    <gdrive_conf_file_created>Google Drive config file created</gdrive_conf_file_created>
+    <gdrive_old_conf>Old config file detected, so we deleted, run this command again to setup new credentials!</gdrive_old_conf>
+    <gdrive_how2setup>We need to configure your Google Drive Account in order to send files to Google Drive, so, please configure&#xA;The setup is very easy, just enter here: [Google Drive Dev. API](https://developers.google.com/drive/api/v3/quickstart/java)&#xA;Tap in *Enable the Drive API*&#xA;Copy *Client Secret* and run this command: *%1setupgdrive mykey PasteYourClientSecretHere*&#xA;After that, we need to get credentials, so, in the same page that you get Client Secret&#xA;Tap on *DOWNLOAD CLIENT CONFIGURATION* save and open this file&#xA;*Copy everything and run this command: %1setupgdrive json PasteFullJSONHere*&#xA;Once you got that finished, just type *!setupgdrive ok* on this chat</gdrive_how2setup>
+    <gdrive_config_file_make>*Config file created!*&#xA;Proceed setup using *%1setupgdrive json YourJSONCredentialsHere*</gdrive_config_file_make>
+    <gdrive_localcurlinfo>To activate token manually, send url that gives you error!&#xA;Do that by using: *%1setupgdrive url*&#xA;Example: %1setupgdrive http://localhost:8888/Callback?4....</gdrive_localcurlinfo>
+
+    <!-- ErfanGSIs Command -->
+
+    <egsi_allowed>UserID: *%1* now has port permissions</egsi_allowed>
+    <egsi_allow_by_reply>To add permissions, reply to user that you wanna add permissions, by using *%1%2 allowuser*</egsi_allow_by_reply>
+    <egsi_current_queue>*Ports on Queue:* %1&#xA;_%2_</egsi_current_queue>
+    <egsi_added_to_queue>Added to Queue</egsi_added_to_queue>
+    <egsi_no_ports_queue>No ports on queue</egsi_no_ports_queue>
+    <egsi_supported_types>*GSI Type or URL is not valid!*&#xA;&#xA;Supported types on Android 9: %1&#xA;&#xA;Supported types on Android 10: %2</egsi_supported_types>
+
+    <!-- Download2GDrive Command -->
+
+    <d2g_downloading>Downloading file...</d2g_downloading>
+    <d2g_file_sent>File sent to your Google Drive</d2g_file_sent>
+
+    <!-- ChangeHotkey Command -->
+
+    <chkey_help>Current bot hotkey on this chat: *%1*&#xA;*Supported Hotkeys: %2*&#xA;To change hotkey on this group, run this command again, passing the desired hotkey&#xA;*eg: %1chkey /*</chkey_help>
+    <chkey_cur_hotkey>Current hotkey now is: *%1*</chkey_cur_hotkey>
+
+</strings>

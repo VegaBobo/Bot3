@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<strings>
+
+    <!-- Generic Strings -->
+
+    <something_went_wrong>Algo deu errado, Tente fazer o processo novamente</something_went_wrong>
+    <only_master_can_run>Apenas o Mestre do Bot pode usar esse comando</only_master_can_run>
+    <only_admin_can_run>Apenas Administradores podem usar esse comando</only_admin_can_run>
+
+    <!-- Hello Command -->
+
+    <hello>Olá!&#xA;Sua mensagem foi: %1</hello>
+
+    <!-- ChangeLang Command -->
+
+    <available_lang>Linguagens Disponíveis:</available_lang>
+    <lang_updated>Linguagem Atualizada!</lang_updated>
+
+    <!-- SetupGDrive Command -->
+
+    <gdrive_credentials_file>credentials/credentials.json</gdrive_credentials_file>
+    <gdrive_credentials_created>*Credenciais criadas com sucesso!*&#xA;Agora, execute *%1setupgdrive ok*</gdrive_credentials_created>
+    <gdrive_recv_ver_code>_Código de verificação recebido com sucesso!_</gdrive_recv_ver_code>
+    <gdrive_credentails_folder_created>_Pasta de credenciais criada!_</gdrive_credentails_folder_created>
+    <gdrive_credentails_folder_error>Erro na criação da pasta de credenciais! (talvez a pasta ja exista?)</gdrive_credentails_folder_error>
+    <gdrive_setup_complete>*Configuração Finalizada com Sucesso!*</gdrive_setup_complete>
+    <gdrive_need2allow>Agora, precisamos conseguir acesso ao seu Google Drive, então, entre em: [here](%1)</gdrive_need2allow>
+    <gdrive_localcurl>Se depois de permitir o acesso e receber um erro ao acessar o localhost, copie a URL e digite: *%1setupgdrive curltoken*</gdrive_localcurl>
+    <gdrive_setup_info>Configura o Bo³+t para o Google Drive</gdrive_setup_info>
+    <gdrive_conf_file_created>Arquivo de Configuração do Google Drive foi criado com sucesso</gdrive_conf_file_created>
+    <gdrive_old_conf>Arquivo de Configuração antigo detectado, sendo assim, deletamos o arquivo antigo, execute esse comando para reconfigurar as credenciais!</gdrive_old_conf>
+    <gdrive_how2setup>Precisamos configurar sua conta do Google Drive para enviar arquivos, então, vamos configurar&#xA;O Processo é bem simples, acesse: [Google Drive Dev. API](https://developers.google.com/drive/api/v3/quickstart/java)&#xA;Toque em *Enable the Drive API*&#xA;Copie o *Client Secret* e execute: *%1setupgdrive mykey ColarSuaClientSecretAqui*&#xA;Depois disso, precisamos das credenciais, então, na mesma página de antes&#xA;Toque em *DOWNLOAD CLIENT CONFIGURATION* salve e abra esse arquivo usando algum editor de texto&#xA;*Copie todo o conteúdo do arquivo e execute: %1setupgdrive json ColarConteúdoAqui*&#xA;Finalizado, apenas escreva *!setupgdrive ok* nesse chat</gdrive_how2setup>
+    <gdrive_config_file_make>*Arquivo de configuração criado!*&#xA;Continue configurando usando *%1setupgdrive json ColeConteúdoDoJSONAqui*</gdrive_config_file_make>
+    <gdrive_localcurlinfo>Para ativar o Token manualmente, envie-me a URL com a falha ao acessar o localhost!&#xA;Faça isso usando: *%1setupgdrive url*&#xA;Ex: %1setupgdrive http://localhost:8888/Callback?4....</gdrive_localcurlinfo>
+
+    <!-- ErfanGSIs Command -->
+
+    <egsi_allowed>UserID: *%1* agora tem permissões para portar GSIs</egsi_allowed>
+    <egsi_allow_by_reply>Para adicionar permissões, responda o usuário desejado com: *%1%2 allowuser*</egsi_allow_by_reply>
+    <egsi_current_queue>*Ports na Fila:* _%1&#xA;%2_</egsi_current_queue>
+    <egsi_added_to_queue>Port adicionado na fila</egsi_added_to_queue>
+    <egsi_no_ports_queue>Sem Ports na Fila</egsi_no_ports_queue>
+    <egsi_supported_types>*Tipo de GSI ou URL invalida!*&#xA;&#xA;Tipos de GSIs suportadas no Android 9: %1&#xA;&#xA;Tipos de GSIs suportadas no Android 10: %2</egsi_supported_types>
+
+    <!-- Download2GDrive Command -->
+
+    <d2g_downloading>Baixando Arquivo...</d2g_downloading>
+    <d2g_file_sent>Arquivo enviado para seu Google Drive</d2g_file_sent>
+
+    <!-- ChangeHotkey Command -->
+
+    <chkey_help>Hotkey atual neste chat: *%1*&#xA;*Hotkeys Suportadas: %2*&#xA;Para trocar a hotkey deste chat, execute esse comando novamente, passando a Hotkey desejada&#xA;*ex: %1chkey /*</chkey_help>
+    <chkey_cur_hotkey>Hotkey atual deste chat: *%1*</chkey_cur_hotkey>
+
+</strings>

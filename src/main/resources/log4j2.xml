@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <Console name="CONSOLE" target="SYSTEM_OUT">
+            <PatternLayout
+                    pattern="%highlight{[%d] - %msg%n}{FATAL=red blink, ERROR=red, WARN=yellow bold, INFO=white, DEBUG=green bold, TRACE=blue}"/>
+        </Console>
+        <File name="LOG_FILE" fileName="bobot.log">
+            <PatternLayout pattern="%d{yyyy-mm-dd HH:mm:ss} [%t] %-5level %logger{36} - %msg%n"/>
+        </File>
+    </Appenders>
+    <Loggers>
+        <Root level="ALL">
+            <AppenderRef ref="CONSOLE"/>
+            <AppenderRef ref="LOG_FILE"/>
+        </Root>
+    </Loggers>
+</Configuration>
