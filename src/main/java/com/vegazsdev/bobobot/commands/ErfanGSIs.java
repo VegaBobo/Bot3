@@ -1,5 +1,8 @@
 package com.vegazsdev.bobobot.commands;
 
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.Session;
 import com.vegazsdev.bobobot.TelegramBot;
 import com.vegazsdev.bobobot.core.Command;
 import com.vegazsdev.bobobot.db.PrefObj;
@@ -8,6 +11,7 @@ import com.vegazsdev.bobobot.utils.FileTools;
 import com.vegazsdev.bobobot.utils.GDrive;
 import com.vegazsdev.bobobot.utils.JSONs;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -19,8 +23,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 
 public class ErfanGSIs extends Command {
@@ -48,15 +52,15 @@ public class ErfanGSIs extends Command {
             if (update.getMessage().getReplyToMessage() != null) {
                 String userid = update.getMessage().getReplyToMessage().getFrom().getId().toString();
                 if (addPortPerm(userid)) {
-                    bot.sendMessage(prefs.getString("egsi_allowed").replace("%1", userid), update);
+                    bot.sendReply(prefs.getString("egsi_allowed").replace("%1", userid), update);
                 }
             } else if (msg.contains(" ")) {
                 String userid = msg.split(" ")[2];
                 if (userid != null && userid.trim().equals("") && addPortPerm(userid)) {
-                    bot.sendMessage(prefs.getString("egsi_allowed").replace("%1", userid), update);
+                    bot.sendReply(prefs.getString("egsi_allowed").replace("%1", userid), update);
                 }
             } else {
-                bot.sendMessage(prefs.getString("egsi_allow_by_reply").replace("%1", prefs.getHotkey())
+                bot.sendReply(prefs.getString("egsi_allow_by_reply").replace("%1", prefs.getHotkey())
                         .replace("%2", this.getAlias()), update);
             }
         } else if (msg.contains(" queue")) {
@@ -65,11 +69,11 @@ public class ErfanGSIs extends Command {
                 for (int i = 0; i < queue.size(); i++) {
                     v.append("#").append(i + 1).append(": ").append(queue.get(i).getGsi()).append("\n");
                 }
-                bot.sendMessage(prefs.getString("egsi_current_queue")
+                bot.sendReply(prefs.getString("egsi_current_queue")
                         .replace("%2", v.toString())
                         .replace("%1", String.valueOf(queue.size())), update);
             } else {
-                bot.sendMessage(prefs.getString("egsi_no_ports_queue"), update);
+                bot.sendReply(prefs.getString("egsi_no_ports_queue"), update);
             }
         } else if (msg.contains(" cancel")) {
 
@@ -105,10 +109,10 @@ public class ErfanGSIs extends Command {
                             isPorting = false;
                         } else {
                             queue.add(gsiCommand);
-                            bot.sendMessage(prefs.getString("egsi_added_to_queue"), update);
+                            bot.sendReply(prefs.getString("egsi_added_to_queue"), update);
                         }
                     } else {
-                        bot.sendMessage(prefs.getString("egsi_supported_types")
+                        bot.sendReply(prefs.getString("egsi_supported_types")
                                 .replace("%1",
                                         Arrays.toString(supportedGSIs9).replace(toolPath + "roms/9/", "")
                                                 .replace("[", "")
@@ -123,7 +127,7 @@ public class ErfanGSIs extends Command {
 
             } else {
                 // no perm
-                bot.sendMessage("No Permissions", update);
+                bot.sendReply("No Permissions", update);
             }
 
         }
@@ -132,9 +136,10 @@ public class ErfanGSIs extends Command {
 
     private String try2AvoidCodeInjection(String parameters) {
         try {
+            // should be regex.
             parameters = parameters.replace("&", "")
                     .replace("\\", "").replace(";", "").replace("<", "")
-                    .replace(">", "");
+                    .replace(">", "").replace("|", "");
         } catch (Exception e) {
             return parameters;
         }
@@ -205,7 +210,7 @@ public class ErfanGSIs extends Command {
         boolean success = false;
         StringBuilder fullLogs = new StringBuilder();
         fullLogs.append("Starting process!");
-        int id = bot.sendMessage(fullLogs.toString(), update);
+        int id = bot.sendReply(fullLogs.toString(), update);
         try {
             pb.redirectErrorStream(true);
             Process process = pb.start();
@@ -221,7 +226,7 @@ public class ErfanGSIs extends Command {
                     fullLogs.append("\n").append(line);
                     bot.editMessage(fullLogs.toString(), update, id);
                 }
-                if (line.contains("Create Temp and out dir") || line.equals("Create Temp and out dir")) {
+                if (line.contains("Create Temp and out dir")) {
                     weDontNeedAria2Logs = true;
                 }
                 if (weDontNeedAria2Logs) {
@@ -249,12 +254,20 @@ public class ErfanGSIs extends Command {
 
                 ArrayList<String> arr = new ArrayList<>();
 
+                AtomicReference<String> aonly = new AtomicReference<>("");
+                AtomicReference<String> ab= new AtomicReference<>("");
+
                 try (Stream<Path> paths = Files.walk(Paths.get("ErfanGSIs/output/"))) {
                     paths
                             .filter(Files::isRegularFile)
                             .forEach(a -> {
-                                if (!a.toString().endsWith(".img")) {
+                                if (a.toString().endsWith(".img.gz")) {
                                     arr.add(a.toString());
+                                    if(a.toString().contains("Aonly")){
+                                        aonly.set(FilenameUtils.getBaseName(a.toString()) + "." + FilenameUtils.getExtension(a.toString()));
+                                    }else{
+                                        ab.set(FilenameUtils.getBaseName(a.toString()) + "." + FilenameUtils.getExtension(a.toString()));
+                                    }
                                 }
                                 if (a.toString().contains(".txt")) {
                                     infoGSI = a.toString();
@@ -264,35 +277,53 @@ public class ErfanGSIs extends Command {
                     e.printStackTrace();
                 }
 
-                fullLogs.append("\n").append("Sending files to Google Drive...");
+                // arr == full path
+
+                fullLogs.append("\n").append("Sending files to SF...");
                 bot.editMessage(fullLogs.toString(), update, id);
 
-                GDriveGSI links = new GSIUpload().enviarGSI(gsiCmdObj.getGsi(), arr);
+                String re = new sfUpload().uploadGsi(arr, gsiCmdObj.getGsi());
+                re=re+"/";
 
-                if (gsiCmdObj.getGsi().contains(":")) {
-                    gsiCmdObj.setGsi(gsiCmdObj.getGsi().split(":")[1]);
-                }
+
+//                GDriveGSI links = new GSIUpload().enviarGSI(gsiCmdObj.getGsi(), arr);
+//
+//                if (gsiCmdObj.getGsi().contains(":")) {
+//                    gsiCmdObj.setGsi(gsiCmdObj.getGsi().split(":")[1]);
+//                }
 
                 StringBuilder generateLinks = new StringBuilder();
 
-                if (links.getA() != null && !links.getA().trim().equals("")) {
-                    generateLinks.append("\n*Download A-Only:* [Google Drive](https://drive.google.com/uc?export=download&id=").append(links.getA()).append(")");
+                if (!aonly.toString().trim().equals("")) {
+                    generateLinks.append("\n*Download A-Only:* [SourceForge](https://sourceforge.net/projects/").append(sfsetup.getSfConf("bot-sf-proj")).append("/files/").append(re).append(aonly.toString()).append(")");
                 }
-                if (links.getAb() != null && !links.getAb().trim().equals("")) {
-                    generateLinks.append("\n*Download A/B:* [Google Drive](https://drive.google.com/uc?export=download&id=").append(links.getAb()).append(")");
+                if (!ab.toString().trim().equals("")) {
+                    generateLinks.append("\n*Download AB:* [SourceForge](https://sourceforge.net/projects/").append(sfsetup.getSfConf("bot-sf-proj")).append("/files/").append(re).append(ab.toString()).append(")");
                 }
-                if (links.getFolder() != null && !links.getFolder().trim().equals("")) {
-                    generateLinks.append("\n*View:* [Google Drive Folder](https://drive.google.com/drive/folders/").append(links.getFolder()).append(")");
-                }
+
+                generateLinks.append("\n*Folder:* [SourceForge](https://sourceforge.net/projects/").append(sfsetup.getSfConf("bot-sf-proj")).append("/files/").append(re).append(")");
 
                 String descGSI = "" + new FileTools().readFile(infoGSI).trim();
 
-                bot.sendMessage("*GSI: " + gsiCmdObj.getGsi() + "*\n\n"
-                        + "*Firmware Base: *" + "[URL](" + gsiCmdObj.getUrl() + ")"
-                        + "\n\n*Information:*\n`" + descGSI
-                        + "`\n" + generateLinks.toString()
-                        + "\n\n*Thanks to:* [Contributors List](https://github.com/erfanoabdi/ErfanGSIs/graphs/contributors)"
-                        + "\n\n[Ported using ErfanGSIs Tool](https://github.com/erfanoabdi/ErfanGSIs)", update);
+                bot.sendReply("Job Finished", update);
+
+                try {
+                    if (sfsetup.getSfConf("bot-send-announcement").equals("true")) {
+                        try {
+                            bot.sendMessage2ID("*GSI: " + gsiCmdObj.getGsi() + "*\n\n"
+                                    + "*Firmware Base: *" + "[URL](" + gsiCmdObj.getUrl() + ")"
+                                    + "\n\n*Information:*\n`" + descGSI
+                                    + "`\n" + generateLinks.toString()
+                                    + "\n\nFile not found? wait some minutes\nSlow downloads? try a mirror :)"
+                                    + "\n\n*Thanks to:* [Contributors List](https://github.com/erfanoabdi/ErfanGSIs/graphs/contributors)"
+                                    + "\n\n[Ported using ErfanGSIs Tool](https://github.com/erfanoabdi/ErfanGSIs)", Long.parseLong(sfsetup.getSfConf("bot-announcement-id")));
+                        }catch (Exception e){
+                            LOGGER.error("bot-announcement-id looks wrong or not set");
+                        }
+                    }
+                }catch (Exception e){
+                    LOGGER.warn("bot-send-announcement is not set");
+                }
 
                 fullLogs.append("\n").append("Finished!");
                 bot.editMessage(fullLogs.toString(), update, id);
@@ -466,4 +497,51 @@ class GDriveGSI {
     void setFolder(String folder) {
         this.folder = folder;
     }
+}
+
+class sfUpload {
+
+    String user;
+    String host;
+    String pass;
+    String proj;
+
+    sfUpload(){
+        this.user = sfsetup.getSfConf("bot-sf-user");
+        this.host =  sfsetup.getSfConf("bot-sf-host");
+        this.pass =  sfsetup.getSfConf("bot-sf-pass");
+        this.proj =  sfsetup.getSfConf("bot-sf-proj");
+    }
+
+    public String uploadGsi(ArrayList<String> aar, String name){
+
+        if(name.contains(":")){
+            // should be better to regex any special char
+            name=name.replace(":", " - ");
+        }
+
+        name=name + " - " + RandomStringUtils.randomAlphanumeric(10).toUpperCase();
+        String path = "/home/frs/project/" + proj + "/"+name;
+
+        try{
+            JSch jsch = new JSch();
+            Session session = jsch.getSession(user, host);
+            session.setConfig("StrictHostKeyChecking", "no");
+            session.setPassword(pass);
+            session.connect();
+            ChannelSftp sftpChannel = (ChannelSftp) session.openChannel("sftp");
+            sftpChannel.connect();
+            sftpChannel.mkdir(path);
+            for (int i = 0; i < aar.size(); i++) {
+                if(!aar.get(i).endsWith(".img")){
+                    sftpChannel.put(aar.get(i), path);
+                }// dont send .img files, they should be compressed//
+            }
+            return name;
+        } catch (Exception e){
+            System.out.println(e);
+        }
+        return null;
+    }
+
 }

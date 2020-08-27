@@ -101,6 +101,32 @@ public class TelegramBot extends TelegramLongPollingBot {
         return 0;
     }
 
+
+    public int sendReply(String msg, Update update) {
+        SendMessage sndmsg = new SendMessage().setText(msg).setChatId(update.getMessage().getChatId())
+                .enableMarkdown(true)
+                .setReplyToMessageId(update.getMessage().getMessageId())
+                .disableWebPagePreview();
+        try {
+            return execute(sndmsg).getMessageId();
+        } catch (TelegramApiException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+        return 0;
+    }
+
+    public int sendMessage2ID(String msg, long id) {
+        SendMessage sndmsg = new SendMessage().setText(msg).setChatId(id)
+                .enableMarkdown(true)
+                .disableWebPagePreview();
+        try {
+            return execute(sndmsg).getMessageId();
+        } catch (TelegramApiException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+        return 0;
+    }
+
     public void editMessage(String msg, Update update, int id) {
         EditMessageText editMessageText = new EditMessageText().setText(msg)
                 .setChatId(update.getMessage().getChatId())
