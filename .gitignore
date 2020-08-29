@@ -6,6 +6,4 @@ databases/
 credentials/
 configs/
 build/
-gradlew
-gradlew.bat
 bobot.log
